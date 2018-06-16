@@ -172,7 +172,7 @@ def fill_unassigned_questions(qset, author):
 # TODO: Add tests
 def packetize(qset):
     if (not is_question_set_complete(qset)):
-        print "Not enough questions in the set"
+        print("Not enough questions in the set")
         return
     
     clear_questions(qset)
@@ -212,8 +212,8 @@ def randomize_acf_tossups_in_period(qset, period):
             index += 1
         if (curDistance > bestDistance):
             bestQuestionOrder = tossups
-            print "Best question distance: " + str(bestDistance)
-            print "Set best question order: " + str(tossups)
+            print("Best question distance: " + str(bestDistance))
+            print("Set best question order: " + str(tossups))
     
     # Now that we have an order, set it
     index = 1
@@ -251,8 +251,8 @@ def randomize_bonuses_in_period(bonuses):
             index += 1
         if (curDistance > bestDistance):
             bestQuestionOrder = bonuses
-            print "Best question distance: " + str(bestDistance)
-            print "Set best question order: " + str(bonuses)
+            print("Best question distance: " + str(bestDistance))
+            print("Set best question order: " + str(bonuses))
     
     # Now that we have an order, set it
     index = 1

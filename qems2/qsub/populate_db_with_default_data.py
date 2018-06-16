@@ -9,7 +9,7 @@ from datetime import datetime
 # TODO: Probably just create a new user in the future
 username = "admin2"
 
-print "Starting script"
+print("Starting script")
 
 # Delete existing data
 for tossup in Tossup.objects.all():
@@ -159,4 +159,4 @@ bonus = Bonus(
                     question_type=vhsl_bonus)
 bonus.save_question(QUESTION_CREATE, writer)
 
-print "Done"
+print("Done")

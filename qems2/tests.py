@@ -97,7 +97,7 @@ class PacketParserTests(TestCase):
     def test_parse_packet_data(self):
         dist = Distribution.objects.create(name="Test Distribution", acf_tossup_per_period_count=20, acf_bonus_per_period_count=20, vhsl_bonus_per_period_count=20)
         dist.save()
-        print "dist.id: " + str(dist.id)
+        print("dist.id: " + str(dist.id))
 
         euroHistory = DistributionEntry(category="History", subcategory="European", distribution=dist)
         euroHistory.save()

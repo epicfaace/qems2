@@ -1,6 +1,5 @@
 import json
 import csv
-import unicodecsv
 import time
 import datetime
 import sys
@@ -13,11 +12,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from models import *
-from forms import *
+from .models import *
+from .forms import *
 from qems2.qsub.model_utils import *
-from utils import *
-from packet_parser import parse_packet_data
+from .utils import *
+from .packet_parser import parse_packet_data
 from django.utils.safestring import mark_safe
 from haystack.query import SearchQuerySet
 from django_comments.models import Comment
@@ -42,8 +41,8 @@ def sidebar (request):
     editor_sets = writer.question_set_editor.all()
 
     all_sets = editor_sets
-    print 'All sets object:'
-    print all_sets
+    print("All sets object:")
+    print(all_sets)
         
     return render_to_response('sidebar.html', {'question_sets': all_sets, 'user': writer},
            context_instance=RequestContext(request))
@@ -84,7 +83,7 @@ def question_sets (request):
     all_sets  = [{'header': 'Upcoming question sets', 'qsets': upcoming_sets, 'id': 'qsets-write'},
                  {'header': 'Completed question sets', 'qsets': completed_sets, 'id': 'qsets-complete'}]
 
-    print all_sets
+    print(all_sets)
     return render_to_response('question_sets.html', {'question_set_list': all_sets, 'user': writer},
                               context_instance=RequestContext(request))
 
@@ -93,7 +92,7 @@ def packet(request):
         player = request.user.get_profile()
         packets = player.packet_set.filter(date_submitted=None)
 
-        print 'packets: ', packets
+        print("packets: ", packets)
 
         return render_to_response('packetview.html',
                                   {'packet_list': packets},
@@ -158,7 +157,7 @@ def create_question_set (request):
                                        'packets': question_set.packet_set.all(),},
                                       context_instance=RequestContext(request))
         else:
-            print form.errors
+            print(form.errors)
             distributions = Distribution.objects.all()
             return render_to_response('create_question_set.html',
                                       {'message': 'There was an error in creating your question set!',
@@ -262,7 +261,7 @@ def edit_question_set(request, qset_id):
         else:
             render_to_response('failure.html', {'message': 'You are not authorized to change this set!'})
     else:
-        print "Begin edit_question_set get", time.strftime("%H:%M:%S")
+        print("Begin edit_question_set get", time.strftime("%H:%M:%S"))
         if user not in qset_editors and user != qset.owner and user not in qset.writer.all():
             # Just redirect to main in this case of no permissions
             # TODO: a better story
@@ -286,7 +285,7 @@ def edit_question_set(request, qset_id):
                                                                 
         comment_tab_list = get_comment_tab_list(tossup_dict, bonus_dict)                    
 
-    print "End edit_question_set get", time.strftime("%H:%M:%S")
+    print("End edit_question_set get", time.strftime("%H:%M:%S"))
         
     return render_to_response('edit_question_set.html',
                               {'form': form,
@@ -559,7 +558,7 @@ def add_editor(request, qset_id):
                         if (writer is not None):
                             qset.writer.remove(writer)
                     except:
-                        print "No writer to delete" # TODO: Come up with a better way of handling this
+                        print("No writer to delete") # TODO: Come up with a better way of handling this
 
                 qset.save()
                 cache.clear()
@@ -1026,7 +1025,7 @@ def edit_tossup(request, tossup_id):
                     tossup.save_question(edit_type=change_type, changer=user)
                     tossup_length = tossup.character_count()
                     cache.clear()
-                    print "Tossup saved"
+                    print("Tossup saved")
                     message = 'Your changes have been saved!'
                     message_class = 'alert-box success'                    
 
@@ -1462,7 +1461,7 @@ def get_unassigned_tossups(request):
             message = 'Invalid request!'
             message_class = 'alert-box alert'
     except Exception as ex:
-        print ex
+        print(ex)
         message = 'Unable to retrieve question set; qset_id either missing or incorrect!'
         message_class = 'alert-box alert'
 
@@ -1493,7 +1492,7 @@ def get_unassigned_bonuses(request):
             message = 'Invalid request!'
             message_class = 'alert-box alert'
     except Exception as ex:
-        print ex
+        print(ex)
         message = 'Unable to retrieve question set; qset_id either missing or incorrect!'
         message_class = 'alert-box alert'
 
@@ -1549,7 +1548,7 @@ def assign_bonuses_to_packet(request):
             for bs_id in bonus_ids:
                 bonus = Bonus.objects.get(id=bs_id)
                 bonus.packet = packet
-                print packet, bonus
+                print(packet, bonus)
                 message = 'Your bonuses have been added to the set!'
                 message_class = 'alert-box success'
                 bonus.save()
@@ -1594,7 +1593,7 @@ def change_question_order(request):
                 message_class = ''
 
             except Exception as ex:
-                print ex
+                print(ex)
                 message = 'Something went terribly wrong!'
                 message_class = 'alert-box alert'
 
@@ -1735,9 +1734,9 @@ def edit_distribution(request, dist_id=None):
 
             else:
                 dist_form = DistributionForm(data=request.POST)
-                #print dist_form.is_valid()
-                #print formset.is_valid()
-                #print formset.errors
+                #print(dist_form.is_valid())
+                #print(formset.is_valid())
+                #print(formset.errors)
                 if 'add_row' in request.POST:
                     distentry_post = request.POST.copy()
                     #TODO: grab a value from an input
@@ -1785,7 +1784,7 @@ def edit_distribution(request, dist_id=None):
                                 if entry is not None:
                                     for qset in qsets:
                                         set_wide_entry = qset.setwidedistributionentry_set.filter(dist_entry=entry)
-                                        print set_wide_entry
+                                        print(set_wide_entry)
                                         if set_wide_entry.count() == 0:
                                             new_set_wide_entry = SetWideDistributionEntry()
                                             new_set_wide_entry.dist_entry = entry
@@ -1877,9 +1876,9 @@ def edit_tiebreak(request, dist_id=None):
         else:
             formset = TiebreakDistributionEntryFormset(data=request.POST, prefix='tiebreak')
             dist_form = TieBreakDistributionForm(data=request.POST)
-            print dist_form.is_valid()
-            print formset.is_valid()
-            print formset.errors
+            print(dist_form.is_valid())
+            print(formset.is_valid())
+            print(formset.errors)
             if dist_form.is_valid() and formset.is_valid():
 
                 dist = TieBreakDistribution.objects.get(id=dist_id)
@@ -1907,9 +1906,9 @@ def edit_tiebreak(request, dist_id=None):
                         if entry is not None:
                             for qset in qsets:
                                 set_wide_entry = qset.tiebreakdistributionentry_set.filter(dist_entry=entry)
-                                print set_wide_entry
+                                print(set_wide_entry)
                                 if set_wide_entry.count() == 0:
-                                    print 'here'
+                                    print("here")
                                     new_set_wide_entry = DistributionEntry()
                                     new_set_wide_entry.dist_entry = entry
                                     new_set_wide_entry.question_set = qset
@@ -1971,7 +1970,7 @@ def add_comment(request):
 
         comment_text = request.POST['comment-text']
         cache.clear()
-        print comment_text
+        print(comment_text)
 
 
 @login_required
@@ -2257,7 +2256,7 @@ def profile(request):
 
     elif request.method == 'POST':
 
-        print request.POST
+        print(request.POST)
         form = WriterChangeForm(request.POST)
 
         if form.is_valid():
@@ -2348,7 +2347,7 @@ def search(request, passed_qset_id=None):
                         if question.question_set == qset and (str(question.category) == search_category or search_category == 'All') and question not in questions:
                             questions.append(question)
                     except:
-                        print "Error retrieving search data for search query", query, sys.exc_info()[0]
+                        print("Error retrieving search data for search query", query, sys.exc_info()[0])
 
                 result = questions
                 message = ''
@@ -2628,7 +2627,7 @@ def export_question_set(request, qset_id, output_format):
                 response = HttpResponse(content_type='text/csv')
                 response['Content-Disposition'] = 'attachment; filename="packet2.csv"'
 
-                writer = unicodecsv.writer(response, encoding='utf-8', quoting=csv.QUOTE_ALL)
+                writer = csv.writer(response, encoding='utf-8', quoting=csv.QUOTE_ALL)
 
                 writer.writerow(["Tossup Question", "Answer", "Category", "Author", "Edited", "Packet", "Question Number", "Comments","Id"])
                 for tossup in tossups:

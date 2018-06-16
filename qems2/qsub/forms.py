@@ -1,5 +1,5 @@
-from models import *
-from utils import *
+from .models import *
+from .utils import *
 from django import forms
 from django.forms import ValidationError
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -151,7 +151,7 @@ class TossupForm(forms.ModelForm):
                 self.fields['packet'] = forms.ModelChoiceField(queryset=packets, required=False, empty_label=pack_label)
                 self.fields['period'] = forms.ModelChoiceField(queryset=periods, required=False, empty_label=period_label)
             except QuestionSet.DoesNotExist:
-                print 'Non-existent question set!'
+                print("Non-existent question set!")
                 self.fields['category'] = forms.ModelChoiceField([], empty_label=None)
 
         if role and role == 'writer':
@@ -229,7 +229,7 @@ class BonusForm(forms.ModelForm):
                 self.fields['period'] = forms.ModelChoiceField(queryset=periods, required=False, empty_label=period_label)
 
             except QuestionSet.DoesNotExist:
-                print 'Non-existent question set!'
+                print("Non-existent question set!")
                 self.fields['category'] = forms.ModelChoiceField([], empty_label=None)
 
         if question_type and question_type == VHSL_BONUS:

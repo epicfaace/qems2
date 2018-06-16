@@ -151,17 +151,17 @@ def class_name(obj):
 @register.filter(name='sort')
 def listsort(value):
     if isinstance(value, dict):
-        print "Sorted dict called"
+        print("Sorted dict called")
         new_dict = OrderedDict()
         key_list = sorted(value.keys())
         for key in key_list:
             new_dict[key] = value[key]
         return new_dict
     elif isinstance(value, list):
-        print "List called"
+        print("List called")
         return sorted(value)
     else:
-        print "Other called"
+        print("Other called")
         return value
     listsort.is_safe = True
 
