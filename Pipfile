@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+"beautifulsoup4" = "*"
+django-npm = "*"
+django-contrib-comments = "*"
+django-haystack = "*"
+django-registration-redux = "*"
+whoosh = "*"
+mysqlclient = "*"
+django-bower = "*"
+django-allauth = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.6"
