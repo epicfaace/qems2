@@ -86,7 +86,7 @@ def question_sets (request):
     return render(request, 'question_sets.html', {'question_set_list': all_sets, 'user': writer})
 
 def packet(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         player = request.user.get_profile()
         packets = player.packet_set.filter(date_submitted=None)
 
@@ -1651,7 +1651,7 @@ def edit_distribution(request, dist_id=None):
     message = ''
     message_class = ''
 
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         DistributionEntryFormset = formset_factory(DistributionEntryForm, can_delete=True)
         if request.method == 'POST':
             # no dist_id supplied means new dist
