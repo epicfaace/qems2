@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from bs4 import BeautifulSoup
-from django.utils.encoding import smart_unicode
+from django.utils.encoding import smart_text
 from django.utils.safestring import mark_safe
 import unicodedata
 
@@ -326,7 +326,7 @@ def does_answerline_have_underlines(line):
         return True
 
 def convert_smart_quotes(line):
-    return smart_unicode(line).translate(DOUBLE_QUOTE_MAP).translate(SINGLE_QUOTE_MAP)
+    return smart_text(line).translate(DOUBLE_QUOTE_MAP).translate(SINGLE_QUOTE_MAP)
 
 def strip_special_chars(line):
     return line.replace('_', '').replace('~', '')
@@ -342,18 +342,18 @@ def strip_unicode(line):
 
 def get_bonus_type_from_question_type(question_type):
     if (question_type is None or str(question_type) == ''):
-        # print "bonus type none"
+        # print("bonus type none")
         return ACF_STYLE_BONUS
     elif (str(question_type) == VHSL_BONUS):
-        # print "vhsl"
+        # print("vhsl")
         return VHSL_BONUS
     else:
-        # print "acf"
+        # print("acf")
         return ACF_STYLE_BONUS
 
 def get_tossup_type_from_question_type(question_type):
     if (question_type is None or str(question_type) == ''):
-        # print "tossup type none"
+        # print("tossup type none")
         return ACF_STYLE_TOSSUP
     else:
         return ACF_STYLE_TOSSUP

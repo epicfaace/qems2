@@ -12,7 +12,7 @@ from django.utils import timezone
 import json
 
 from collections import OrderedDict
-from utils import *
+from .utils import *
 
 # Create your models here.
 
@@ -113,7 +113,7 @@ ACF_DISTRO = OrderedDict([('S', (5, 5)),
 
 class Writer (models.Model):
 
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     question_set_writer = models.ManyToManyField('QuestionSet', related_name='writer')
     question_set_editor = models.ManyToManyField('QuestionSet', related_name='editor')
@@ -136,12 +136,12 @@ class QuestionSet (models.Model):
     date = models.DateField()
     host = models.CharField(max_length=200)
     address = models.TextField(max_length=200)
-    owner = models.ForeignKey('Writer', related_name='owner')
+    owner = models.ForeignKey('Writer', related_name='owner', on_delete=models.CASCADE)
     #public = models.BooleanField()
     num_packets = models.PositiveIntegerField()
-    distribution = models.ForeignKey('Distribution')
-    #teams = models.ForeignKey('Team')
-    #tiebreak_dist = models.ForeignKey('TieBreakDistribution')
+    distribution = models.ForeignKey('Distribution', on_delete=models.CASCADE)
+    #teams = models.ForeignKey('Team', on_delete=models.CASCADE)
+    #tiebreak_dist = models.ForeignKey('TieBreakDistribution', on_delete=models.CASCADE)
     max_acf_tossup_length = models.PositiveIntegerField(default=750)
     max_acf_bonus_length = models.PositiveIntegerField(default=400)
     max_vhsl_bonus_length = models.PositiveIntegerField(default=100)
@@ -154,8 +154,8 @@ class QuestionSet (models.Model):
 
 class Role(models.Model):
 
-    writer = models.ForeignKey(Writer)
-    question_set = models.ForeignKey(QuestionSet)
+    writer = models.ForeignKey(Writer, on_delete=models.CASCADE)
+    question_set = models.ForeignKey(QuestionSet, on_delete=models.CASCADE)
     category = models.CharField(max_length=500)
     can_view_others = models.BooleanField(default=False)
     can_edit_others = models.BooleanField(default=False)
@@ -164,10 +164,10 @@ class Packet (models.Model):
     packet_name = models.CharField(max_length=200)
     date_submitted = models.DateField(auto_now_add=True)
     # authors = models.ManyToManyField(Player)
-    question_set = models.ForeignKey(QuestionSet)
-    #team = models.ForeignKey(Team)
+    question_set = models.ForeignKey(QuestionSet, on_delete=models.CASCADE)
+    #team = models.ForeignKey(Team, on_delete=models.CASCADE)
 
-    created_by = models.ForeignKey(Writer, related_name='packet_creator')
+    created_by = models.ForeignKey(Writer, related_name='packet_creator', on_delete=models.CASCADE)
 
     def __str__(self):
         return '{0!s}'.format(self.packet_name)
@@ -196,7 +196,7 @@ class Distribution(models.Model):
 # Contains no set-specific information, but does contain info on absolute
 # number of tossups (rather than percentages)
 class CategoryEntry(models.Model):
-    distribution = models.ForeignKey(Distribution)
+    distribution = models.ForeignKey(Distribution, on_delete=models.CASCADE)
     category_name = models.CharField(max_length=200)
     sub_category_name = models.CharField(max_length=200, null=True)
     sub_sub_category_name = models.CharField(max_length=200, null=True)
@@ -243,8 +243,8 @@ class CategoryEntry(models.Model):
 # and 10 ACFTossupBonusTiebreakerPeriods corresponding to a different PeriodWideEntry
 class PeriodWideEntry (models.Model):
     period_type = models.CharField(max_length=200) # i.e. "ACF Regular Period"
-    question_set = models.ForeignKey(QuestionSet)
-    distribution = models.ForeignKey(Distribution)
+    question_set = models.ForeignKey(QuestionSet, on_delete=models.CASCADE)
+    distribution = models.ForeignKey(Distribution, on_delete=models.CASCADE)
 
     # Current number of questions across all categories
     acf_tossup_cur = models.PositiveIntegerField(default=0) 
@@ -270,8 +270,8 @@ class PeriodWideEntry (models.Model):
 # part of an mACF set.  It could also be the VHSL bonus round or a tiebreaker period.
 class Period (models.Model):
     name = models.CharField(max_length=200) # i.e. "VHSL Tossup Period 1"
-    packet = models.ForeignKey(Packet)
-    period_wide_entry = models.ForeignKey(PeriodWideEntry)
+    packet = models.ForeignKey(Packet, on_delete=models.CASCADE)
+    period_wide_entry = models.ForeignKey(PeriodWideEntry, on_delete=models.CASCADE)
     
     acf_tossup_cur = models.PositiveIntegerField(default=0) 
     acf_bonus_cur = models.PositiveIntegerField(default=0) 
@@ -286,8 +286,8 @@ class Period (models.Model):
 # in the set.  For instance, this might track how many History questions have currently been writtne
 # and are still needed for the tiebreaker rounds in an ACF tournament.
 class PeriodWideCategoryEntry(models.Model):
-    period_wide_entry = models.ForeignKey(PeriodWideEntry)
-    category_entry = models.ForeignKey(CategoryEntry)
+    period_wide_entry = models.ForeignKey(PeriodWideEntry, on_delete=models.CASCADE)
+    category_entry = models.ForeignKey(CategoryEntry, on_delete=models.CASCADE)
         
     # Current number of tossups/bonuses across all periods (with this distribution) for this category
     acf_tossup_cur_across_periods = models.PositiveIntegerField(default=0) 
@@ -319,8 +319,8 @@ class PeriodWideCategoryEntry(models.Model):
 # For instance, it could track how many literature questions are needed in
 # the VHSL bonus round (i.e. second period) of Round 5 of a tournament.
 class OnePeriodCategoryEntry(models.Model):
-    period = models.ForeignKey(Period)
-    period_wide_category_entry = models.ForeignKey(PeriodWideCategoryEntry)
+    period = models.ForeignKey(Period, on_delete=models.CASCADE)
+    period_wide_category_entry = models.ForeignKey(PeriodWideCategoryEntry, on_delete=models.CASCADE)
     
     # Current number of tossups/bonuses in this period for this category
     acf_tossup_cur_in_period = models.PositiveIntegerField(default=0) 
@@ -369,7 +369,7 @@ class TieBreakDistribution(models.Model):
 
 class DistributionEntry(models.Model):
 
-    distribution = models.ForeignKey(Distribution)
+    distribution = models.ForeignKey(Distribution, on_delete=models.CASCADE)
     category = models.TextField()
     subcategory = models.TextField()
     min_tossups = models.PositiveIntegerField(null=True)
@@ -385,8 +385,8 @@ class DistributionEntry(models.Model):
 
 class TieBreakDistributionEntry(models.Model):
 
-    question_set = models.ForeignKey(QuestionSet)
-    dist_entry = models.ForeignKey(DistributionEntry)
+    question_set = models.ForeignKey(QuestionSet, on_delete=models.CASCADE)
+    dist_entry = models.ForeignKey(DistributionEntry, on_delete=models.CASCADE)
     num_tossups = models.PositiveIntegerField(null=True)
     num_bonuses = models.PositiveIntegerField(null=True)
 
@@ -395,8 +395,8 @@ class TieBreakDistributionEntry(models.Model):
 
 class SetWideDistributionEntry(models.Model):
 
-    question_set = models.ForeignKey(QuestionSet)
-    dist_entry = models.ForeignKey(DistributionEntry)
+    question_set = models.ForeignKey(QuestionSet, on_delete=models.CASCADE)
+    dist_entry = models.ForeignKey(DistributionEntry, on_delete=models.CASCADE)
     num_tossups = models.PositiveIntegerField()
     num_bonuses = models.PositiveIntegerField()
 
@@ -415,18 +415,18 @@ class QuestionHistory(models.Model):
     pass
 
 class Tossup (models.Model):
-    packet = models.ForeignKey(Packet, null=True)
-    question_set = models.ForeignKey(QuestionSet)
+    packet = models.ForeignKey(Packet, null=True, on_delete=models.CASCADE)
+    question_set = models.ForeignKey(QuestionSet, on_delete=models.CASCADE)
     tossup_text = models.TextField()
     tossup_answer = models.TextField()
-    period = models.ForeignKey(Period, null=True)
+    period = models.ForeignKey(Period, null=True, on_delete=models.CASCADE)
 
-    category = models.ForeignKey(DistributionEntry, null=True)
+    category = models.ForeignKey(DistributionEntry, null=True, on_delete=models.CASCADE)
     subtype = models.CharField(max_length=500)
     time_period = models.CharField(max_length=500)
     location = models.CharField(max_length=500)
-    question_type = models.ForeignKey(QuestionType, null=True)
-    author = models.ForeignKey(Writer)
+    question_type = models.ForeignKey(QuestionType, null=True, on_delete=models.CASCADE)
+    author = models.ForeignKey(Writer, on_delete=models.CASCADE)
 
     locked = models.BooleanField(default=False)
     edited = models.BooleanField(default=False)
@@ -437,12 +437,12 @@ class Tossup (models.Model):
     search_question_content = models.TextField(default='')
     search_question_answers = models.TextField(default='')
 
-    question_history = models.ForeignKey(QuestionHistory, null=True)
+    question_history = models.ForeignKey(QuestionHistory, null=True, on_delete=models.CASCADE)
 
     created_date = models.DateTimeField()
     last_changed_date = models.DateTimeField()
     edited_date = models.DateTimeField(null=True)
-    editor = models.ForeignKey(Writer, null=True, related_name='tossup_editor')
+    editor = models.ForeignKey(Writer, null=True, related_name='tossup_editor', on_delete=models.CASCADE)
 
     # Calculates character count, ignoring special characters
     def character_count(self):
@@ -593,9 +593,9 @@ class Tossup (models.Model):
         return get_tossup_type_from_question_type(self.question_type)
 
 class Bonus(models.Model):
-    packet = models.ForeignKey(Packet, null=True)
-    question_set = models.ForeignKey(QuestionSet)
-    period = models.ForeignKey(Period, null=True)    
+    packet = models.ForeignKey(Packet, null=True, on_delete=models.CASCADE)
+    question_set = models.ForeignKey(QuestionSet, on_delete=models.CASCADE)
+    period = models.ForeignKey(Period, null=True, on_delete=models.CASCADE)    
 
     # Leadins and part 2 and 3 aren't required in VHSL, so allow nulls
     # The is_valid method will make sure that ACF bonuses have these values
@@ -607,15 +607,15 @@ class Bonus(models.Model):
     part3_text = models.TextField(null=True)
     part3_answer = models.TextField(null=True)
 
-    category = models.ForeignKey(DistributionEntry, null=True)
+    category = models.ForeignKey(DistributionEntry, null=True, on_delete=models.CASCADE)
     subtype = models.CharField(max_length=500)
     time_period = models.CharField(max_length=500)
     location = models.CharField(max_length=500)
-    question_type = models.ForeignKey(QuestionType, null=True)
+    question_type = models.ForeignKey(QuestionType, null=True, on_delete=models.CASCADE)
 
-    question_history = models.ForeignKey(QuestionHistory, null=True)
+    question_history = models.ForeignKey(QuestionHistory, null=True, on_delete=models.CASCADE)
 
-    author = models.ForeignKey(Writer)
+    author = models.ForeignKey(Writer, on_delete=models.CASCADE)
 
     locked = models.BooleanField(default=False)
     edited = models.BooleanField(default=False)
@@ -629,7 +629,7 @@ class Bonus(models.Model):
     created_date = models.DateTimeField()
     last_changed_date = models.DateTimeField()
     edited_date = models.DateTimeField(null=True)
-    editor = models.ForeignKey(Writer, null=True, related_name='bonus_editor')
+    editor = models.ForeignKey(Writer, null=True, related_name='bonus_editor', on_delete=models.CASCADE)
 
     # Calculates character count, ignoring special characters
     def character_count(self):
@@ -779,7 +779,7 @@ class Bonus(models.Model):
     def is_valid(self):
 
         if (self.get_bonus_type() == ACF_STYLE_BONUS):
-            print "valid acf"
+            print("valid acf")
 
             if self.leadin == '':
                 raise InvalidBonus('leadin', self.leadin, self.question_number)
@@ -804,7 +804,7 @@ class Bonus(models.Model):
             return True
 
         elif (self.get_bonus_type() == VHSL_BONUS):
-            print "valid vhsl"
+            print("valid vhsl")
 
             if (self.leadin is not None and self.leadin != ''):
                 raise InvalidBonus('leadin', self.leadin + " (this field should be blank for VHSL bonuses.)", self.question_number)
@@ -856,7 +856,7 @@ class Bonus(models.Model):
         if (self.question_history is not None):
             tossups = TossupHistory.objects.filter(question_history=self.question_history)
             bonuses = BonusHistory.objects.filter(question_history=self.question_history)
-            print "is not null"
+            print("is not null")
 
         return tossups, bonuses
 
@@ -902,10 +902,10 @@ class Bonus(models.Model):
 class TossupHistory(models.Model):
     tossup_text = models.TextField()
     tossup_answer = models.TextField()
-    changer = models.ForeignKey(Writer)
+    changer = models.ForeignKey(Writer, on_delete=models.CASCADE)
     change_date = models.DateTimeField()
-    question_history = models.ForeignKey(QuestionHistory)
-    question_type = models.ForeignKey(QuestionType, null=True)
+    question_history = models.ForeignKey(QuestionHistory, on_delete=models.CASCADE)
+    question_type = models.ForeignKey(QuestionType, null=True, on_delete=models.CASCADE)
 
     def __unicode__(self):
         return '{0!s}...'.format(strip_markup(self.tossup_answer)[0:40]) #.decode('utf-8')
@@ -925,10 +925,10 @@ class BonusHistory(models.Model):
     part2_answer = models.TextField(null=True)
     part3_text = models.TextField(null=True)
     part3_answer = models.TextField(null=True)
-    changer = models.ForeignKey(Writer)
+    changer = models.ForeignKey(Writer, on_delete=models.CASCADE)
     change_date = models.DateTimeField()
-    question_history = models.ForeignKey(QuestionHistory)
-    question_type = models.ForeignKey(QuestionType, null=True)
+    question_history = models.ForeignKey(QuestionHistory, on_delete=models.CASCADE)
+    question_type = models.ForeignKey(QuestionType, null=True, on_delete=models.CASCADE)
 
     def to_html(self):
         output = ''
@@ -961,21 +961,21 @@ class Tag(models.Model):
     pass
 
 class WriterQuestionSetSettings(models.Model):
-    writer = models.ForeignKey(Writer)
-    question_set = models.ForeignKey(QuestionSet)
+    writer = models.ForeignKey(Writer, on_delete=models.CASCADE)
+    question_set = models.ForeignKey(QuestionSet, on_delete=models.CASCADE)
     email_on_all_new_comments = models.BooleanField(default=False)
     email_on_all_new_questions = models.BooleanField(default=False)
     
     # Creates new per category writer settings for this object
     def create_per_category_writer_settings(self):
-        print "self id: " + str(self.id)
+        print("self id: " + str(self.id))
         for de in self.question_set.distribution.distributionentry_set.all():
             pcws = PerCategoryWriterSettings(writer_question_set_settings=self, distribution_entry=de)
             pcws.save()
             
 class PerCategoryWriterSettings(models.Model):
-    writer_question_set_settings = models.ForeignKey(WriterQuestionSetSettings)
-    distribution_entry = models.ForeignKey(DistributionEntry)
+    writer_question_set_settings = models.ForeignKey(WriterQuestionSetSettings, on_delete=models.CASCADE)
+    distribution_entry = models.ForeignKey(DistributionEntry, on_delete=models.CASCADE)
     email_on_new_questions = models.BooleanField(default=False)
     email_on_new_comments = models.BooleanField(default=False)
 
