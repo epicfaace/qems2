@@ -44,8 +44,7 @@ def sidebar (request):
     print("All sets object:")
     print(all_sets)
         
-    return render('sidebar.html', {'question_sets': all_sets, 'user': writer},
-)
+    return render('sidebar.html', {'question_sets': all_sets, 'user': writer})
 
 @login_required
 def question_sets (request):
@@ -84,8 +83,7 @@ def question_sets (request):
                  {'header': 'Completed question sets', 'qsets': completed_sets, 'id': 'qsets-complete'}]
 
     print(all_sets)
-    return render('question_sets.html', {'question_set_list': all_sets, 'user': writer},
-)
+    return render('question_sets.html', {'question_set_list': all_sets, 'user': writer})
 
 def packet(request):
     if request.user.is_authenticated():
@@ -95,8 +93,7 @@ def packet(request):
         print("packets: ", packets)
 
         return render('packetview.html',
-                                  {'packet_list': packets},
-)
+                                  {'packet_list': packets})
 
     else:
         return HttpResponseRedirect('/accounts/login/')
@@ -154,8 +151,7 @@ def create_question_set (request):
                                        'tossups': Tossup.objects.filter(question_set=question_set),
                                        'bonuses': Bonus.objects.filter(question_set=question_set),
                                        'comment_tab_list': comment_tab_list,
-                                       'packets': question_set.packet_set.all(),},
-)
+                                       'packets': question_set.packet_set.all(),})
         else:
             print(form.errors)
             distributions = Distribution.objects.all()
@@ -164,8 +160,7 @@ def create_question_set (request):
                                        'message_class': 'alert-box warning',
                                        'form': form,
                                        'distributions': distributions,
-                                       'user': user},
-)
+                                       'user': user})
     else:
         form = QuestionSetForm()
         distributions = Distribution.objects.all()
@@ -173,8 +168,7 @@ def create_question_set (request):
     return render('create_question_set.html',
                               {'form': form,
                                'distributions': distributions,
-                               'user': user},
-)
+                               'user': user})
 
 @login_required
 def edit_question_set(request, qset_id):
@@ -254,8 +248,7 @@ def edit_question_set(request, qset_id):
                                            'comment_list': comment_tab_list,
                                            'role': role,
                                            'message': 'Your changes have been successfully saved.',
-                                           'message_class': 'alert-success'},
-)
+                                           'message_class': 'alert-success'})
             else:
                 qset_editors = []
         else:
@@ -306,8 +299,7 @@ def edit_question_set(request, qset_id):
                                'qset': qset,
                                'role': role,
                                'read_only': read_only,
-                               'message': message},
-)
+                               'message': message})
 
 @login_required
 def categories(request, qset_id, category_id):
@@ -347,8 +339,7 @@ def categories(request, qset_id, category_id):
         'category_status': category_status,
         'qset': qset,
         'message': message,
-        'category': category_object},
-)	
+        'category': category_object})	
 
 @login_required
 def view_all_questions(request, qset_id):
@@ -364,8 +355,7 @@ def view_all_questions(request, qset_id):
         message = 'You are not authorized to view this set'
         return render('failure.html',
                                  {'message': message,
-                                  'message_class': 'alert-box alert'},
-)        
+                                  'message_class': 'alert-box alert'})        
     else:
         tossups, tossup_dict, bonuses, bonus_dict = get_tossup_and_bonuses_in_set(qset, question_limit=10000, preview_only=True)
             
@@ -375,8 +365,7 @@ def view_all_questions(request, qset_id):
         'tossups': tossups,
         'bonuses': bonuses,
         'qset': qset,
-        'message': message},
-)	
+        'message': message})	
 
 @login_required
 def view_all_comments(request, qset_id):
@@ -392,8 +381,7 @@ def view_all_comments(request, qset_id):
         message = 'You are not authorized to view this set'
         return render('failure.html',
                                  {'message': message,
-                                  'message_class': 'alert-box alert'},
-)        
+                                  'message_class': 'alert-box alert'})        
     else:
         tossups, tossup_dict, bonuses, bonus_dict = get_tossup_and_bonuses_in_set(qset, question_limit=10000, preview_only=True)
         comment_tab_list = get_comment_tab_list(tossup_dict, bonus_dict, comment_limit=10000)
@@ -403,8 +391,7 @@ def view_all_comments(request, qset_id):
         'user': user,
         'comment_tab_list': comment_tab_list,
         'qset': qset,
-        'message': message},
-)	
+        'message': message})	
 
 @login_required
 def question_set_distribution(request, qset_id):
@@ -421,8 +408,7 @@ def question_set_distribution(request, qset_id):
         message = 'You are not authorized to view this set'
         return render('failure.html',
                                  {'message': message,
-                                  'message_class': 'alert-box alert'},
-)                
+                                  'message_class': 'alert-box alert'})                
     elif user == qset.owner:
         set_distro_formset = create_set_distro_formset(qset)
         tiebreak_formset = create_tiebreak_formset(qset)    
@@ -438,8 +424,7 @@ def question_set_distribution(request, qset_id):
         'tiebreak_formset': tiebreak_formset,
         'qset': qset,
         'message': message,
-        'read_only': read_only},
-)	
+        'read_only': read_only})	
 
 @login_required
 def edit_set_distribution(request, qset_id):
@@ -467,8 +452,7 @@ def edit_set_distribution(request, qset_id):
         else:
             return render('failure.html',
                                      {'message': 'Something went wrong. We\'re working on it.',
-                                      'message_class': 'alert-box alert'},
-)
+                                      'message_class': 'alert-box alert'})
     elif request.method == 'GET':
         if user == qset.owner:
             return render('view_all_questions.html',
@@ -477,8 +461,7 @@ def edit_set_distribution(request, qset_id):
                 'tossups': tossups,
                 'bonuses': bonuses,
                 'qset': qset,
-                'message': message},
-)	
+                'message': message})	
             
 
 @login_required
@@ -507,8 +490,7 @@ def edit_set_tiebreak(request, qset_id):
         else:
             return render('failure.html',
                                      {'message': 'Something went wrong. We\'re working on it.',
-                                      'message_class': 'alert-box alert'},
-)
+                                      'message_class': 'alert-box alert'})
 
 @login_required
 def find_editor(request):
@@ -532,15 +514,13 @@ def add_editor(request, qset_id):
             available_editors = []
             return render('failure.html',
                                      {'message': 'You are not authorized to make changes to this tournament!',
-                                      'message_class': 'alert-box alert'},
-)
+                                      'message_class': 'alert-box alert'})
 
         return render('add_editor.html',
                                  {'qset': qset,
                                   'available_editors': available_editors,
                                   'message': message,
-                                  'user': user},
-)
+                                  'user': user})
 
 
     elif request.method == 'POST':
@@ -574,15 +554,13 @@ def add_editor(request, qset_id):
             available_editors = []
             return render('failure.html',
                                      {'message': 'You are not authorized to make changes to this tournament!',
-                                      'message_class': 'alert-box alert'},
-)
+                                      'message_class': 'alert-box alert'})
 
         return render('add_editor.html',
                                  {'qset': qset,
                                   'available_editors': available_editors,
                                   'message': message,
-                                  'user': user},
-)
+                                  'user': user})
 
 @login_required
 def add_writer(request, qset_id):
@@ -602,15 +580,13 @@ def add_writer(request, qset_id):
             available_writers = []
             return render('failure.html',
                                      {'message': 'You are not authorized to make changes to this tournament!',
-                                      'message_class': 'alert-box alert'},
-)
+                                      'message_class': 'alert-box alert'})
 
         return render('add_writer.html',
                                  {'qset': qset,
                                   'available_writers': available_writers,
                                   'message': message,
-                                  'user': user},
-)
+                                  'user': user})
 
 
     elif request.method == 'POST':
@@ -635,16 +611,14 @@ def add_writer(request, qset_id):
             available_writers = []
             return render('failure.html',
                                      {'message': 'You are not authorized to make changes to this tournament!',
-                                      'message_class': 'alert-box alert'},
-)
+                                      'message_class': 'alert-box alert'})
 
         return render('add_writer.html',
                                  {'qset': qset,
                                   'available_writers': available_writers,
                                   'message': message,
                                   'message_class': message_class,
-                                  'user': user},
-)
+                                  'user': user})
 
 
 @login_required
@@ -695,8 +669,7 @@ def edit_packet(request, packet_id):
          'tossup_status': tossup_status,
          'bonus_status': bonus_status,
          'read_only': read_only,
-         'user': user},
-)
+         'user': user})
 
 @login_required
 def add_tossups(request, qset_id, packet_id=None):
@@ -731,8 +704,7 @@ def add_tossups(request, qset_id, packet_id=None):
              'message_class': message_class,
              'read_only': read_only,
              'user': user,
-             'qset': qset},
-)
+             'qset': qset})
 
     elif request.method == 'POST':
         if user in qset.editor.all() or user in qset.writer.all() or user == qset.owner:
@@ -780,8 +752,7 @@ def add_tossups(request, qset_id, packet_id=None):
                              'tossup_id': tossup.id,
                              'read_only': read_only,
                              'user': user,
-                             'qset': qset},
-)
+                             'qset': qset})
 
                 except InvalidTossup as ex:
                     message = str(ex)
@@ -810,14 +781,12 @@ def add_tossups(request, qset_id, packet_id=None):
                  'tossup_id': None,
                  'read_only': read_only,
                  'user': user,
-                 'qset': qset},
-)
+                 'qset': qset})
 
     else:
         return render('failure.html',
             {'message': 'The request cannot be completed as specified',
-             'message_class': 'alert-box alert'},
-)
+             'message_class': 'alert-box alert'})
 
 @login_required
 def add_bonuses(request, qset_id, bonus_type, packet_id=None):
@@ -838,8 +807,7 @@ def add_bonuses(request, qset_id, bonus_type, packet_id=None):
         else:
             return render('failure.html',
                 {'message': 'The request cannot be completed as specified.  Bonus type is invalid.',
-                 'message_class': 'alert-box alert'},
-)
+                 'message_class': 'alert-box alert'})
 
     if request.method == 'GET':
         if user in qset.editor.all() or user in qset.writer.all() or user == qset.owner:
@@ -858,8 +826,7 @@ def add_bonuses(request, qset_id, bonus_type, packet_id=None):
              'read_only': read_only,
              'question_type': bonus_type,
              'user': user,
-             'qset': qset},
-)
+             'qset': qset})
 
     elif request.method == 'POST':
         bonus = None
@@ -910,8 +877,7 @@ def add_bonuses(request, qset_id, bonus_type, packet_id=None):
                              'read_only': read_only,
                              'question_type': bonus_type,
                              'user': user,
-                             'qset': qset},
-)
+                             'qset': qset})
 
                 except InvalidBonus as ex:
                     message = str(ex)
@@ -941,14 +907,12 @@ def add_bonuses(request, qset_id, bonus_type, packet_id=None):
                  'read_only': read_only,
                  'question_type': bonus_type,
                  'user': user,
-                 'qset': qset},
-)
+                 'qset': qset})
 
     else:
         return render('failure.html',
             {'message': 'The request cannot be completed as specified',
-             'message_class': 'alert-box alert'},
-)
+             'message_class': 'alert-box alert'})
 
 @login_required
 def edit_tossup(request, tossup_id):
@@ -992,8 +956,7 @@ def edit_tossup(request, tossup_id):
              'message_class': message_class,
              'read_only': read_only,
              'role': role,
-             'user': user},
-)
+             'user': user})
 
     elif request.method == 'POST':
         if user == tossup.author or user == qset.owner or user in qset.editor.all():
@@ -1063,8 +1026,7 @@ def edit_tossup(request, tossup_id):
              'message': message,
              'message_class': message_class,
              'read_only': read_only,
-             'user': user},
-)
+             'user': user})
 
 @login_required
 def edit_bonus(request, bonus_id):
@@ -1113,8 +1075,7 @@ def edit_bonus(request, bonus_id):
              'message_class': message_class,
              'read_only': read_only,
              'role': role,
-             'user': user},
-)
+             'user': user})
 
     elif request.method == 'POST':
         if user == bonus.author or user == qset.owner or user in qset.editor.all():
@@ -1189,8 +1150,7 @@ def edit_bonus(request, bonus_id):
              'message_class': message_class,
              'read_only': read_only,
              'role': role,
-             'user': user},
-)
+             'user': user})
 
 @login_required
 def delete_tossup(request):
@@ -1410,8 +1370,7 @@ def add_packets(request, qset_id):
                               'message_class': message_class,
                               'form': form,
                               'qset': qset,
-                              'user': user},
-)
+                              'user': user})
 
 @login_required
 def delete_packet(request):
@@ -1683,8 +1642,7 @@ def distributions (request):
 
     return render('distributions.html',
                              {'dists': all_dists,
-                              'user': request.user.writer},
-)
+                              'user': request.user.writer})
 
 @login_required
 def edit_distribution(request, dist_id=None):
@@ -1815,8 +1773,7 @@ def edit_distribution(request, dist_id=None):
                                       'formset': formset,
                                       'message': message,
                                       'message_class': message_class,
-                                      'user': request.user.writer},
-)
+                                      'user': request.user.writer})
         else:
             if dist_id is not None:
                 dist = Distribution.objects.get(id=dist_id)
@@ -1841,8 +1798,7 @@ def edit_distribution(request, dist_id=None):
                                       'formset': formset,
                                       'message': message,
                                       'message_class': message_class,
-                                      'user': request.user.writer},
-)
+                                      'user': request.user.writer})
 
 @login_required()
 def edit_tiebreak(request, dist_id=None):
@@ -1933,8 +1889,7 @@ def edit_tiebreak(request, dist_id=None):
 
         return render('edit_tiebreak.html',
                                   {'form': dist_form,
-                                   'formset': formset},
-)
+                                   'formset': formset})
 
     else:
         if dist_id is not None:
@@ -1955,8 +1910,7 @@ def edit_tiebreak(request, dist_id=None):
 
         return render('edit_tiebreak.html',
         {'form': dist_form,
-        'formset': formset,},
-)
+        'formset': formset,})
 
 
 @login_required
@@ -1991,8 +1945,7 @@ def upload_questions(request, qset_id):
                 'message': mark_safe('Please verify that this data is correct. Hitting "Submit" will upload these questions '\
                 'If you see any mistakes in the submissions, please correct them in the <strong><em>original file</em></strong> and reupload.'),
                 'message_class': 'alert-box warning',
-                'qset': qset},
-)
+                'qset': qset})
             else:
                 messages.error(request, form.questions_file.errors)
                 return HttpResponseRedirect('/edit_question_set/{0}'.format(qset_id))
@@ -2023,8 +1976,7 @@ def type_questions(request, qset_id=None):
                                           'message': 'Please verify that these questions have been correctly parsed. Hitting "Submit" will '\
                                           'commit these questions to the database. If you see any mistakes, hit "Cancel" and correct your mistakes.',
                                           'qset': qset,
-                                          'user': user},
-)
+                                          'user': user})
             else:
                 question_data = request.POST['questions']
                 tossups, bonuses = parse_packet_data(question_data, qset)
@@ -2038,8 +1990,7 @@ def type_questions(request, qset_id=None):
                                      {'tossups': tossups,
                                       'bonuses': bonuses,
                                       'qset': qset,
-                                      'user': user},
-)
+                                      'user': user})
     elif request.method == 'GET':
         if (user == qset.owner or user in qset.editor.all() or user in qset.writer.all()):
             dist_entries = qset.setwidedistributionentry_set.all().order_by('dist_entry__category', 'dist_entry__subcategory')
@@ -2049,14 +2000,12 @@ def type_questions(request, qset_id=None):
                                      {'user': user,
                                       'qset': qset,
                                       'form': form,
-                                      'dist_entries': dist_entries},
-)
+                                      'dist_entries': dist_entries})
         else:
             messages.error(request, 'You do not have permission to add questions to this set')
             return render('type_questions.html',
                                      {'qset': qset,
-                                      'user': user},
-)
+                                      'user': user})
 
 @login_required
 def type_questions_edit(request, question_type, question_id):
@@ -2089,8 +2038,7 @@ def type_questions_edit(request, question_type, question_id):
                                           'message': 'Please verify that these questions have been correctly parsed. Hitting "Submit" will '\
                                           'commit these questions to the database. If you see any mistakes, hit "Cancel" and correct your mistakes.',
                                           'qset': qset,
-                                          'user': user},
-)
+                                          'user': user})
             else:
                 question_data = request.POST['questions']
                 tossups, bonuses = parse_packet_data(question_data, qset)
@@ -2104,8 +2052,7 @@ def type_questions_edit(request, question_type, question_id):
                                      {'tossups': tossups,
                                       'bonuses': bonuses,
                                       'qset': qset,
-                                      'user': user},
-)
+                                      'user': user})
     elif request.method == 'GET':
         if (user == qset.owner or user in qset.editor.all() or user in qset.writer.all()):
             dist_entries = qset.setwidedistributionentry_set.all().order_by('dist_entry__category', 'dist_entry__subcategory')
@@ -2115,14 +2062,12 @@ def type_questions_edit(request, question_type, question_id):
                                      {'user': user,
                                       'qset': qset,
                                       'form': form,
-                                      'dist_entries': dist_entries},
-)
+                                      'dist_entries': dist_entries})
         else:
             messages.error(request, 'You do not have permission to edit this question')
             return render('type_questions_edit.html',
                                      {'qset': qset,
-                                      'user': user},
-)
+                                      'user': user})
 
 @login_required
 def complete_upload(request):
@@ -2270,8 +2215,7 @@ def profile(request):
 
     return render('profile.html',
             {'form': form,
-             'user': request.user.writer},
-)
+             'user': request.user.writer})
 
 @login_required()
 def search(request, passed_qset_id=None):
@@ -2306,8 +2250,7 @@ def search(request, passed_qset_id=None):
                                        'selected_set': q_set,
                                        'tossups_selected': 'checked',
                                        'bonuses_selected': 'checked',
-                                       'passed_q_set': passed_q_set},
-)
+                                       'passed_q_set': passed_q_set})
 
         else:
             query = request.GET.get('q')
@@ -2370,8 +2313,7 @@ def search(request, passed_qset_id=None):
                                        'bonuses_selected': bonuses_selected,
                                        'passed_q_set': passed_q_set,
                                        'message': message,
-                                       'message_class': message_class},
-)
+                                       'message_class': message_class})
 
 @login_required
 def logout_view(request):
@@ -2406,8 +2348,7 @@ def move_tossup(request, q_set_id, tossup_id):
                                      'form': form,
                                      'tossup': tossup,
                                      'message': message,
-                                     'message_class': message_class},
-)
+                                     'message_class': message_class})
             else:
                 form = []
                 return render('move_tossup.html',
@@ -2416,8 +2357,7 @@ def move_tossup(request, q_set_id, tossup_id):
                                      'form': form,
                                      'tossup': tossup,
                                      'message': message,
-                                     'message_class': message_class},
-)
+                                     'message_class': message_class})
         else:
             form = []
             message = 'You do not have permissions to move this question.'
@@ -2429,8 +2369,7 @@ def move_tossup(request, q_set_id, tossup_id):
                                  'tossup': None,
                                  'form': form,
                                  'message': message,
-                                 'message_class': message_class},
-)
+                                 'message_class': message_class})
 
     else:
         # Update the question set for this tossup
@@ -2455,8 +2394,7 @@ def move_tossup(request, q_set_id, tossup_id):
                                          'dest_q_set': dest_qset,
                                          'tossup': tossup,
                                          'message': message,
-                                         'message_class': message_class},
-)
+                                         'message_class': message_class})
                 else:
                     message = 'There was an error with your submission.  Hit the back button and make sure you selected a valid question set to move to.'
                     message_class = 'alert-box warning'
@@ -2467,8 +2405,7 @@ def move_tossup(request, q_set_id, tossup_id):
                                          'form': form,
                                          'tossup': tossup,
                                          'message': message,
-                                         'message_class': message_class},
-)
+                                         'message_class': message_class})
             else:
                 message = 'There was an error moving your question.  Hit the back button and make sure you selected a valid question set to move to.'
                 message_class = 'alert-box warning'
@@ -2479,8 +2416,7 @@ def move_tossup(request, q_set_id, tossup_id):
                                      'tossup': None,
                                      'form': form,
                                      'message': message,
-                                     'message_class': message_class},
-)
+                                     'message_class': message_class})
 
         else:
             message = 'You do not have permissions to move this question.'
@@ -2493,8 +2429,7 @@ def move_tossup(request, q_set_id, tossup_id):
                                  'tossup': None,
                                  'form': form,
                                  'message': message,
-                                 'message_class': message_class},
-)
+                                 'message_class': message_class})
 
 @login_required
 def move_bonus(request, q_set_id, bonus_id):
@@ -2524,8 +2459,7 @@ def move_bonus(request, q_set_id, bonus_id):
                                      'form': form,
                                      'bonus': bonus,
                                      'message': message,
-                                     'message_class': message_class},
-)
+                                     'message_class': message_class})
             else:
                 form = []
                 return render('move_bonus.html',
@@ -2534,8 +2468,7 @@ def move_bonus(request, q_set_id, bonus_id):
                                      'form': form,
                                      'bonus': bonus,
                                      'message': message,
-                                     'message_class': message_class},
-)
+                                     'message_class': message_class})
         else:
             form = []
             message = 'You do not have permissions to move this question.'
@@ -2547,8 +2480,7 @@ def move_bonus(request, q_set_id, bonus_id):
                                  'bonus': None,
                                  'form': form,
                                  'message': message,
-                                 'message_class': message_class},
-)
+                                 'message_class': message_class})
 
     else:
         # Update the question set for this bonus
@@ -2568,8 +2500,7 @@ def move_bonus(request, q_set_id, bonus_id):
                                         {'user': user,
                                          'q_set': q_set,
                                          'dest_q_set': dest_qset,
-                                         'bonus': bonus},
-)
+                                         'bonus': bonus})
                 else:
                     message = 'There was an error with your submission.  Hit the back button and make sure you selected a valid question set to move to.'
                     message_class = 'alert-box warning'
@@ -2580,8 +2511,7 @@ def move_bonus(request, q_set_id, bonus_id):
                                          'form': form,
                                          'bonus': bonus,
                                          'message': message,
-                                         'message_class': message_class},
-)
+                                         'message_class': message_class})
             else:
                 message = 'There was an error moving your question.  Hit the back button and make sure you selected a valid question set to move to.'
                 message_class = 'alert-box warning'
@@ -2592,8 +2522,7 @@ def move_bonus(request, q_set_id, bonus_id):
                                      'bonus': None,
                                      'form': form,
                                      'message': message,
-                                     'message_class': message_class},
-)
+                                     'message_class': message_class})
 
         else:
             message = 'You do not have permissions to move this question.'
@@ -2606,8 +2535,7 @@ def move_bonus(request, q_set_id, bonus_id):
                                  'bonus': None,
                                  'form': form,
                                  'message': message,
-                                 'message_class': message_class},
-)
+                                 'message_class': message_class})
 
 @login_required
 def export_question_set(request, qset_id, output_format):
@@ -2669,8 +2597,7 @@ def export_question_set(request, qset_id, output_format):
                                      'tossups': tossups,
                                      'bonuses': bonuses,
                                      'message': message,
-                                     'message_class': message_class},
-)
+                                     'message_class': message_class})
             else:
                 message = 'Unsupported export format.'
                 message_class = 'alert-box alert'
@@ -2683,8 +2610,7 @@ def export_question_set(request, qset_id, output_format):
                                      'tossups': tossups,
                                      'bonuses': bonuses,
                                      'message': message,
-                                     'message_class': message_class},
-)
+                                     'message_class': message_class})
 
         else:
             message = 'You are not authorized to export questions from this set.'
@@ -2698,8 +2624,7 @@ def export_question_set(request, qset_id, output_format):
                                  'tossups': tossups,
                                  'bonuses': bonuses,
                                  'message': message,
-                                 'message_class': message_class},
-)
+                                 'message_class': message_class})
 
 @login_required
 def restore_tossup(request):
@@ -2810,8 +2735,7 @@ def tossup_history(request, tossup_id):
                                          'tossup_histories': tossup_histories,
                                          'bonus_histories': bonus_histories,
                                          'message': message,
-                                         'message_class': message_class},
-)
+                                         'message_class': message_class})
 
                 else:
                     message = "You don't have permission to view this question"
@@ -2826,8 +2750,7 @@ def tossup_history(request, tossup_id):
                          'tossup_histories': [],
                          'bonus_histories': [],
                          'message': message,
-                         'message_class': message_class},
-)
+                         'message_class': message_class})
 
 @login_required
 def bonus_history(request, bonus_id):
@@ -2860,8 +2783,7 @@ def bonus_history(request, bonus_id):
                                          'tossup_histories': tossup_histories,
                                          'bonus_histories': bonus_histories,
                                          'message': message,
-                                         'message_class': message_class},
-)
+                                         'message_class': message_class})
 
                 else:
                     message = "You don't have permission to view this question"
@@ -2876,8 +2798,7 @@ def bonus_history(request, bonus_id):
                          'tossup_histories': [],
                          'bonus_histories': [],
                          'message': message,
-                         'message_class': message_class},
-)
+                         'message_class': message_class})
 
 @login_required
 def convert_tossup(request):
@@ -2977,8 +2898,7 @@ def questions_remaining(request, qset_id):
                               'tu_needed': tu_needed,
                               'bs_needed': bs_needed,
                               'qset': qset,
-                              'message': message},
-)
+                              'message': message})
 
 @login_required
 def bulk_change_set(request, qset_id):
@@ -3007,8 +2927,7 @@ def bulk_change_set(request, qset_id):
                                   'bonuses': bonuses,
                                   'qset': qset,
                                   'message': message,
-                                  'message_class': message_class},
-)
+                                  'message_class': message_class})
     else:
         if ('confirm' in request.POST):
             operation = request.POST['change-type']
@@ -3061,8 +2980,7 @@ def bulk_change_set(request, qset_id):
                                               'bonuses': bonuses,
                                               'qset': qset,
                                               'message': message,
-                                              'message_class': message_class},
-)
+                                              'message_class': message_class})
                 elif (operation == 'unedit'):
                     bulk_edit_questions(False, change_tossups, change_bonuses, qset, user)
 
@@ -3075,8 +2993,7 @@ def bulk_change_set(request, qset_id):
                                               'bonuses': bonuses,
                                               'qset': qset,
                                               'message': message,
-                                              'message_class': message_class},
-)
+                                              'message_class': message_class})
                 elif (operation == 'packet'):
                     packets = Packet.objects.filter(question_set=qset)
                     
@@ -3087,8 +3004,7 @@ def bulk_change_set(request, qset_id):
                                               'bonuses': bonuses,
                                               'qset': qset,
                                               'message': message,
-                                              'message_class': message_class},
-)
+                                              'message_class': message_class})
                 elif (operation == 'lock'):
                     bulk_lock_questions(True, change_tossups, change_bonuses, qset, user)
 
@@ -3101,8 +3017,7 @@ def bulk_change_set(request, qset_id):
                                               'bonuses': bonuses,
                                               'qset': qset,
                                               'message': message,
-                                              'message_class': message_class},
-)
+                                              'message_class': message_class})
                 elif (operation == 'unlock'):
                     bulk_lock_questions(False, change_tossups, change_bonuses, qset, user)
 
@@ -3115,8 +3030,7 @@ def bulk_change_set(request, qset_id):
                                               'bonuses': bonuses,
                                               'qset': qset,
                                               'message': message,
-                                              'message_class': message_class},
-)
+                                              'message_class': message_class})
                 elif (operation == 'delete'):
                     bulk_delete_questions(change_tossups, change_bonuses, qset, user)
                     message = "Successfully deleted questions."
@@ -3131,8 +3045,7 @@ def bulk_change_set(request, qset_id):
                                               'bonuses': bonuses,
                                               'qset': qset,
                                               'message': message,
-                                              'message_class': message_class},
-)
+                                              'message_class': message_class})
 
                 elif (operation == 'convert-to-acf-style-tossup'):
                     bulk_convert_to_acf_style_tossup(change_tossups, change_bonuses, qset, user)
@@ -3148,8 +3061,7 @@ def bulk_change_set(request, qset_id):
                                               'bonuses': bonuses,
                                               'qset': qset,
                                               'message': message,
-                                              'message_class': message_class},
-)
+                                              'message_class': message_class})
 
                 elif (operation == 'convert-to-acf-style-bonus'):
                     bulk_convert_to_acf_style_bonus(change_tossups, change_bonuses, qset, user)
@@ -3165,8 +3077,7 @@ def bulk_change_set(request, qset_id):
                                               'bonuses': bonuses,
                                               'qset': qset,
                                               'message': message,
-                                              'message_class': message_class},
-)
+                                              'message_class': message_class})
                 elif (operation == 'convert-to-vhsl-bonus'):
                     bulk_convert_to_vhsl_bonus(change_tossups, change_bonuses, qset, user)
                     message = "Successfully converted question type to VHSL bonuses."
@@ -3182,8 +3093,7 @@ def bulk_change_set(request, qset_id):
                                               'bonuses': bonuses,
                                               'qset': qset,
                                               'message': message,
-                                              'message_class': message_class},
-)
+                                              'message_class': message_class})
                 elif (operation == 'move'):
                     new_sets = user.question_set_editor.exclude(id=qset_id)
                     cache.clear()
@@ -3193,8 +3103,7 @@ def bulk_change_set(request, qset_id):
                                               'bonuses': bonuses,
                                               'qset': qset,
                                               'message': message,
-                                              'message_class': message_class},
-)
+                                              'message_class': message_class})
                 elif (operation == 'author'):
                     writers = Writer.objects.filter(Q(question_set_writer=qset) | Q(question_set_editor=qset)).distinct()
                     cache.clear()
@@ -3206,8 +3115,7 @@ def bulk_change_set(request, qset_id):
                                               'qset': qset,
                                               'writers': writers,
                                               'message': message,
-                                              'message_class': message_class},
-)
+                                              'message_class': message_class})
 
             else:
                 message = "Error!  You must select at least one question."
@@ -3218,8 +3126,7 @@ def bulk_change_set(request, qset_id):
                                           'bonuses': bonuses,
                                           'qset': qset,
                                           'message': message,
-                                          'message_class': message_class},
-)
+                                          'message_class': message_class})
         else:
             message = "You didn't hit the confirm button."
             message_class = 'alert-box warning'
@@ -3229,8 +3136,7 @@ def bulk_change_set(request, qset_id):
                                       'bonuses': bonuses,
                                       'qset': qset,
                                       'message': message,
-                                      'message_class': message_class},
-)
+                                      'message_class': message_class})
 
 @login_required
 def bulk_change_author(request, qset_id):
@@ -3285,8 +3191,7 @@ def bulk_change_author(request, qset_id):
                                   'bonuses': bonuses,
                                   'qset': qset,
                                   'message': message,
-                                  'message_class': message_class},
-)
+                                  'message_class': message_class})
 
 @login_required
 def bulk_change_packet(request, qset_id):
@@ -3337,8 +3242,7 @@ def bulk_change_packet(request, qset_id):
                                   'bonuses': bonuses,
                                   'qset': qset,
                                   'message': message,
-                                  'message_class': message_class},
-)
+                                  'message_class': message_class})
 
 @login_required
 def bulk_move_question(request, qset_id):
@@ -3407,8 +3311,7 @@ def bulk_move_question(request, qset_id):
                                   'bonuses': bonuses,
                                   'qset': qset,
                                   'message': message,
-                                  'message_class': message_class},
-)
+                                  'message_class': message_class})
 
 @login_required
 def writer_question_set_settings(request, qset_id):
@@ -3422,8 +3325,7 @@ def writer_question_set_settings(request, qset_id):
     if (role == 'none'):
         return render('failure.html',
             {'message': 'You do not have permissions to this set',
-             'message_class': 'alert-box alert'},
-)
+             'message_class': 'alert-box alert'})
     
     # Create the settings if it doesn't exist
     settings = None
@@ -3464,8 +3366,7 @@ def writer_question_set_settings(request, qset_id):
                      'message': message,
                      'message_class': message_class,
                      'user': user,
-                     'qset': qset},
-)
+                     'qset': qset})
             
         else:
             message = 'There was an error saving your settings.'
@@ -3476,8 +3377,7 @@ def writer_question_set_settings(request, qset_id):
                      'message': message,
                      'message_class': message_class,
                      'user': user,
-                     'qset': qset},
-)
+                     'qset': qset})
         
     elif request.method == 'GET':
         entries = settings.percategorywritersettings_set.all()
@@ -3499,8 +3399,7 @@ def writer_question_set_settings(request, qset_id):
                                   'message': message,
                                   'message_class': message_class,
                                   'user': user,
-                                  'qset': qset},
-)
+                                  'qset': qset})
 
 @login_required
 def contributor(request, qset_id, writer_id):
@@ -3518,14 +3417,12 @@ def contributor(request, qset_id, writer_id):
     if (writer not in qset_editors and writer != qset.owner and writer not in qset.writer.all()):
         return render('failure.html',
             {'message': 'The specified contributor is not in this set',
-             'message_class': 'alert-box alert'},
-)
+             'message_class': 'alert-box alert'})
         
     if user not in qset_editors and user != qset.owner and user not in qset.writer.all():
         return render('failure.html',
             {'message': 'You are not authorized to view this set',
-             'message_class': 'alert-box alert'},
-)
+             'message_class': 'alert-box alert'})
 
     tossups = Tossup.objects.filter(question_set=qset).filter(author=writer)
     bonuses = Bonus.objects.filter(question_set=qset).filter(author=writer)
@@ -3542,5 +3439,4 @@ def contributor(request, qset_id, writer_id):
         'bonuses': bonuses,
         'writer_status': writer_status,
         'qset': qset,
-        'writer': writer},
-)	
+        'writer': writer})	
