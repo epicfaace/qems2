@@ -1,10 +1,14 @@
 # Django settings for QuEST project.
 import os
 
-DEBUG = True
+PROD = False
+DEBUG = not PROD
 TEMPLATE_DEBUG = DEBUG
 
-ALLOWED_HOSTS = ['.grapesmoker.net']
+if PROD:
+    ALLOWED_HOSTS = ['.grapesmoker.net']
+else:
+    ALLOWED_HOSTS = ["*"]
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -19,16 +23,24 @@ CACHES = {
     }
 }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'qems92',                      # Or path to database file if using sqlite3.
-        'USER': 'django',                      # Not used with sqlite3.
-        'PASSWORD': 'django',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+if PROD:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': 'qems92',                      # Or path to database file if using sqlite3.
+            'USER': 'django',                      # Not used with sqlite3.
+            'PASSWORD': 'django',                  # Not used with sqlite3.
+            'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+            'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite3',
+        }
+    }
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -98,13 +110,7 @@ STATICFILES_FINDERS = (
 
 BOWER_COMPONENTS_ROOT = os.path.join(PROJECT_ROOT, 'components')
 
-# Make this unique, and don't share it with anybody.
-# Read secret from disk
-f = open(os.path.join(PROJECT_ROOT, 'secret'), 'r')
-SECRET_KEY = f.read().strip()
-f.close()
-
-#SECRET_KEY = '%&amp;5&amp;wmrx-g8zpk8=m*kttzkxfy^38ziedy$1kf-4uwme8bksba'
+SECRET_KEY = os.getenv("SECRET_KEY", "akLSJDAS)DJ")
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -138,7 +144,7 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend'
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
 #    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -147,7 +153,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+]
 
 ROOT_URLCONF = 'qems2.urls'
 
@@ -176,7 +182,6 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django_comments',
     'djangobower',
-    'unicodecsv',
 #    'debug_toolbar',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
@@ -193,7 +198,11 @@ ACCOUNT_SIGNUP_FORM_CLASS = 'qems2.qsub.forms.RegistrationFormWithName'
 
 LOGIN_REDIRECT_URL = "/"
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'qems2@outlook.com'
 SERVER_EMAIL = 'smtp-mail.outlook.com'
